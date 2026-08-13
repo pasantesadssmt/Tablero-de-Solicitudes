@@ -1,163 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estado de Solicitudes</title>
-  <style>
-    body { 
-      font-family: 'Poppins', Segoe UI, Tahoma, Geneva, Verdana, sans-serif; 
-      background: #f0f4f8; 
-      padding: 15px; 
-      color: #333; 
-      margin: 0;
-    }
-    .container { 
-      max-width: 600px; 
-      margin: 20px auto; 
-      background: white; 
-      padding: 25px; 
-      border-radius: 16px; 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-    }
-    .main-title {
-      color: #1a365d; 
-      margin-top: 0;
-      font-size: 1.6em;
-      text-align: center;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 15px;
-    }
-    .status-card { 
-      background: #ebf8ff; 
-      border-left: 6px solid #3182ce; 
-      padding: 15px; 
-      border-radius: 8px; 
-      margin-bottom: 25px; 
-    }
-    .status-title { 
-      font-weight: bold; 
-      text-transform: uppercase; 
-      font-size: 0.8em; 
-      color: #2b6cb0; 
-      letter-spacing: 0.5px;
-    }
-    .status-text { 
-      font-size: 1.15em; 
-      color: #1a365d; 
-      font-weight: bold; 
-      margin-top: 5px; 
-    }
-    .counter-box {
-      background: #f7fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .counter { 
-      font-size: 3em; 
-      font-weight: bold; 
-      color: #2d3748; 
-      line-height: 1;
-      margin-bottom: 5px;
-    }
-    .counter-label { 
-      color: #718096; 
-      font-size: 0.9em; 
-      font-weight: 500;
-    }
-    .section-title {
-      color: #2c5282;
-      font-size: 1.2em;
-      margin-bottom: 15px;
-      font-weight: bold;
-    }
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      margin-top: 10px; 
-    }
-    th, td { 
-      padding: 12px 10px; 
-      text-align: left; 
-      border-bottom: 1px solid #e2e8f0; 
-      font-size: 0.95em; 
-    }
-    th { 
-      background: #2d3748; 
-      color: white; 
-      font-weight: 600;
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-    .badge { 
-      padding: 5px 10px; 
-      border-radius: 20px; 
-      font-size: 0.75em; 
-      font-weight: bold; 
-      color: white; 
-      display: inline-block;
-      text-transform: uppercase;
-    }
-    .badge-pend { background: #ed8936; }
-    .badge-proc { background: #4299e1; }
-    
-    .prio-tag {
-      font-size: 0.8em;
-      font-weight: bold;
-      color: #718096;
-      margin-top: 3px;
-      display: block;
-    }
-    .prio-Urgente { color: #e53e3e; }
-    .prio-Alta { color: #dd6b20; }
-    .prio-Media { color: #3182ce; }
-    .prio-Baja { color: #38a169; }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <h2 class="main-title">Estado de Solicitudes - Sistema de Gestión</h2>
-    
-    <div class="status-card">
-      <div class="status-title">Tarea Actual</div>
-      <div class="status-text" id="estado-trabajo">Cargando estado actual...</div>
-    </div>
-
-    <div class="counter-box">
-      <div class="counter" id="total-espera">-</div>
-      <div class="counter-label">Tickets totales en cola de espera</div>
-    </div>
-
-    <div class="section-title">Cola de Requerimientos Activos</div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 15%; text-align: center;">N°</th>
-          <th style="width: 60%;">Usuario / Solicitud</th>
-          <th style="width: 25%; text-align: center;">Estado</th>
-        </tr>
-      </thead>
-      <tbody id="tabla-cuerpo">
-        <tr>
-          <td colspan="3" style="text-align: center; color: #999; padding: 20px;">
-            Sincronizando con la base de datos...
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysbMgpUolsWaBGdGT3gbwik_gXALTHWYNITZ4zHxS72JfG06Bcl8a4FTV-WVn0wJHr/exec';
+<script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0mQoxVrejJaNhg33lUUbnpeybWAda8z_tBwGEUxFchbAcz6Of5eK-YpsMOhG_i2g/exec';
 
     window.onload = function() {
       actualizarTablero();
-      // Se actualiza automáticamente cada 30 segundos
       setInterval(actualizarTablero, 30000);
     };
 
@@ -165,7 +10,6 @@
       try {
         const respuesta = await fetch(APPS_SCRIPT_URL);
         const datos = await respuesta.json();
-        
         mostrarDatos(datos);
       } catch (error) {
         console.error("Error de conexión:", error);
@@ -190,11 +34,12 @@
         var claseBadge = fila.status === 'En Proceso' ? 'badge-proc' : 'badge-pend';
         var textoEstado = fila.status === 'En Proceso' ? 'En Proceso' : 'Espera';
         
+        // ACÁ ESTÁ EL CAMBIO: Título en negrita arriba, Nombre en gris abajo
         tr.innerHTML = 
           '<td style="text-align: center; font-weight: bold; font-size: 1.1em; color: #4a5568;">' + fila.orden + '°</td>' +
           '<td>' +
-            '<span style="font-weight: 600; color: #2d3748;">' + fila.usuario + '</span><br>' +
-            '<small style="color: #4a5568; font-size: 0.9em;">' + fila.tarea + '</small>' +
+            '<span style="font-weight: 600; color: #2d3748; font-size: 1.05em;">' + fila.titulo + '</span><br>' +
+            '<small style="color: #4a5568; font-size: 0.95em;">' + fila.nombre + '</small>' +
             '<span class="prio-tag prio-' + fila.prioridad + '">Prioridad: ' + fila.prioridad + '</span>' +
           '</td>' +
           '<td style="text-align: center;"><span class="badge ' + claseBadge + '">' + textoEstado + '</span></td>';
@@ -203,5 +48,3 @@
       });
     }
   </script>
-</body>
-</html>
